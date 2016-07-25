@@ -1,50 +1,113 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+    <title>reveal.js</title>
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/night.css">
+    <link rel="stylesheet" href="css/custom.css">
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section><h1>Developer Environment</h1></section>
+        <section>
+            <h2>Monolith</h2>
+            <p class="fragment">One Executable</p>
+            <p class="fragment">One Database</p>
+        </section>
+        <section>
+            <h2>Microservices</h2>
+            <p class="fragment">Simplified / focused code</p>
+            <p class="fragment">Now lot's of little services / db’s etc…</p>
+            <p class="fragment">Moved complexity into the infrastructure</p>
+            <p class="fragment"><q>"Infrastructure as code"</q></p>
+            <p class="fragment"><q>"Immutable Infrastructure"</q></p>
+            <p class="fragment"><q>Automation</q></p>
+        </section>
+        <section>
+            <h2>Payhive Architecture</h2>
+            <img data-src="payment-architecture_v2.png">
+        </section>
+        <section>
+            <h2>Payhive Architecture</h2>
+            <p class="fragment">7 tomcat instances, 7 *.war artifacts, 1 iframe web application</p>
+            <p class="fragment">Redis, Kinesis, Nginx, 2 Mysql, 4 dynamodb instances</p>
+            <p class="fragment">more to come.....</p>
+        </section>
+        <section>
+            <h2>Environment Pipeline</h2>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+            <div>
+                <div class="arrow-tail"></div>
+                <div class="arrow-right"></div>
+                <div style="clear: both;">&nbsp;</div>
+            </div>
 
-		<script>
-			// More info https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				history: true,
+            <span class="fragment">
+                <div class="env">DEV?</div>
+            </span>
+            <span>
+                <div class="env">PDEV</div>
+                <div class="env">PTEST</div>
+                <div class="env">VTEST</div>
+                <div class="env">STEST</div>
+                <div class="env">PROD</div>
+            </span>
+        </section>
+        <section>
+            <h2>Automation</h2>
+            <p class="fragment">Reproducible & Isolated => Fast & Confident</p>
+            <p class="fragment">No need to re-configure 'the world' day to day</p>
+            <p class="fragment">New team members</p>
+        </section>
+        <section>
+            <h2>Local Machine vs AWS??</h2>
+            <p class="fragment">Reproducible & Isolated => Fast & Confident</p>
+            <p class="fragment">No need to re-configure 'the world' day to day</p>
+            <p class="fragment">New team members</p>
+        </section>
+        <section>
+            <h2>Demo...</h2>
+        </section>
+    </div>
+</div>
 
-				// More info https://github.com/hakimel/reveal.js#dependencies
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
-			});
-		</script>
-	</body>
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+    // More info https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        history: true,
+
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        dependencies: [
+            {src: 'plugin/markdown/marked.js'},
+            {src: 'plugin/markdown/markdown.js'},
+            {src: 'plugin/notes/notes.js', async: true},
+            {
+                src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            }
+            }
+        ]
+    });
+</script>
+</body>
 </html>
