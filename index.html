@@ -1,50 +1,172 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+    <title>reveal.js</title>
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section>Payhive / Kinesis</section>
+        <section data-markdown>
+            <script type="text/template">
+                * General Overview / Event Stream architecture
+                * auspost-messaging library and ReactiveX
+                * immutability / microservices / testing with kotlin
+            </script>
+        </section>
+        <section data-markdown>
+            <script type="text/template">
+                ### Payhive architecture
+                ![](./img/Kinesis_Existing_Flow.png)
+            </script>
+        </section>
+        <section data-markdown>
+            <script type="text/template">
+                ### Kinesis
+                ![](./img/kinesis.png)
+            </script>
+        </section>
+        <section data-markdown>
+            <script type="text/template">
+                ### Kinesis
+                * Stream has 1+ shards
+                * More shards = more throughput
+                * Each shard can support 5 reads per second
+            </script>
+        </section>
+        <section data-markdown>
+            <script type="text/template">
+                ### Kinesis
+                * Eventing not messaging
+                  * all microservices receive all messages
+                  * business logic (msg filtering/processing) in code
+                * Consumer keeps checkpoint (default dynamo)
+                  * replay of messages
+                  * throttle processing
+            </script>
+        </section>
+        <section data-markdown>
+            <script type="text/template">
+                ### Payhive/Kinesis usecase
+                * 1 stream / 2 shards
+                * 5 microservices
+                * Each microservice has 2 instances -> 1 per shard
+                * Each shard needs to be read every 1 second
+                * To Simplify => 5 microservices / 1 Stream
+            </script>
+        </section>
+        <section data-markdown>
+            <script type="text/template">
+                ### Payhive/Kinesis problems
+                * Each API operation requires 2+ microservices
+                * Each microservice add ~ 1 second latency
+                * Tokenise ~ 2 seconds (+ 3 cuscal)
+                * Make payment ~ 2 seconds
+            </script>
+        </section>
+        <section data-markdown>
+            <script type="text/template">
+                ### Payhive/Kinesis problems
+                * What happens when 6th microservice is added?
+                * 6 polls per second will cause 'retryable' throughput exception
+                * Can't increase poll frequency
+                * Split streams into 'functional' streams?
+            </script>
+        </section>
+        <section data-markdown>
+            <script type="text/template">
+                ### Payhive/Kinesis problems
+                * Processing 1 event takes 3 seconds
+                * Need to run each in own thread
+                * But?
+                * Loose all ordering benefits
+                * Checkpoint is sequential, what happens if event processing fails?
+            </script>
+        </section>
+        </section>
+        <section data-markdown>
+            <script type="text/template">
+                ### Kinesis 'good parts'
+                * Documented: Big data / throughput / ordered
+                * Offline / Batch processing
+                * Minimal infrastructure
+            </script>
+        </section>
+        <section data-markdown>
+            <script type="text/template">
+                ### Kinesis 'not so good parts'
+                * Latency sensitive
+                * Question: Cannot process events sequentially
+            </script>
+        </section>
+        <section data-markdown>
+            <script type="text/template">
+                ### SNS / SQS Event Stream
+            </script>
+        </section>
+        <section data-markdown>
+            <script type="text/template">
+                ### Replace Kinesis with steam of SNS / SQS
+                * Using fanout pattern
+                * SNS / SQS works as a stream
+                * Event is not stored alike Kinesis
+                * Events are not ordered - Kinesis we are processing records concurrenctly killing the ordering feature
+            </script>
+        </section>
+        <section data-markdown>
+            <script type="text/template">
+                ![](./img/Event_Stream_Using_SNS_SQS.png)
+            </script>
+        </section>
+        <section data-markdown>
+            <script type="text/template">
+                ### Advantages over Kinesis
+                * No read limits
+                * Much Faster. Kinesis read latency = 1sec / SNS-SQS read latency = 200 millis
+                * Don't have to manage DynamoDB tables
+            </script>
+        </section>
+    </div>
+</div>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
 
-		<script>
-			// More info https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				history: true,
+<script>
+    // More info https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        history: true,
 
-				// More info https://github.com/hakimel/reveal.js#dependencies
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
-			});
-		</script>
-	</body>
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        dependencies: [
+            {src: 'plugin/markdown/marked.js'},
+            {src: 'plugin/markdown/markdown.js'},
+            {src: 'plugin/notes/notes.js', async: true},
+            {
+                src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            }
+            }
+        ]
+    });
+</script>
+</body>
 </html>
