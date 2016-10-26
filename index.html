@@ -50,6 +50,7 @@
                 * Stream has 1+ shards
                 * More shards = more throughput
                 * Each shard can support 5 reads per second
+                * Each read 10MB of messages
             </script>
         </section>
         <section data-markdown>
@@ -61,6 +62,7 @@
                 * Consumer keeps checkpoint (default dynamo)
                   * replay of messages
                   * throttle processing
+                  * downtime
             </script>
         </section>
         <section data-markdown>
