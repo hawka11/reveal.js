@@ -50,7 +50,7 @@
                 * Stream has 1+ shards
                 * More shards = more throughput
                 * Each shard can support 5 reads per second
-                * Each read 10MB of messages
+                * Each shard read 10MB 'batch' of messages
             </script>
         </section>
         <section data-markdown>
@@ -80,8 +80,8 @@
                 ### Payhive/Kinesis problems
                 * Each API operation requires 2+ microservices
                 * Each microservice add ~ 1 second latency
-                * Tokenise ~ 2 seconds (+ 3 cuscal)
-                * Make payment ~ 2 seconds
+                * Tokenise ~ 2 seconds (+ 2 cuscal)
+                * Make payment ~ 2 seconds (+ 2 cuscal)
             </script>
         </section>
         <section data-markdown>
@@ -97,10 +97,11 @@
             <script type="text/template">
                 ### Payhive/Kinesis problems
                 * Processing 1 event takes 3 seconds
-                * Need to run each in own thread
-                * But?
+                * Need to process each event in own thread
+                * But...?
                 * Loose all ordering benefits
-                * Checkpoint is sequential, what happens if event processing fails?
+                * Checkpoint is sequential, what happens if:
+                  * event processing within batch fails?
             </script>
         </section>
         </section>
@@ -116,6 +117,7 @@
             <script type="text/template">
                 ### Kinesis 'not so good parts'
                 * Latency sensitive
+                * Question: Operational event stream
                 * Question: Cannot process events sequentially
             </script>
         </section>
@@ -126,7 +128,7 @@
         </section>
         <section data-markdown>
             <script type="text/template">
-                ### Replace Kinesis with steam of SNS / SQS
+                ### Replace Kinesis with SNS/SQS stream
                 * Using fanout pattern
                 * SNS / SQS works as a stream
                 * Event is not stored alike Kinesis
@@ -142,8 +144,20 @@
             <script type="text/template">
                 ### Advantages over Kinesis
                 * No read limits
-                * Much Faster. Kinesis read latency = 1sec / SNS-SQS read latency = 200 millis
+                * Much Faster.
+                * Kinesis read latency = 1sec
+                * SNS-SQS read latency = 200 millis
                 * Don't have to manage DynamoDB tables
+                * Future: Could forward to offline 'batch' kinesis stream?
+            </script>
+        </section>
+
+        <section data-markdown>
+            <script type="text/template">
+                ### Disadvantages over Kinesis
+                * More Infrastructure
+                * Not strict ordering
+                * No replay / history
             </script>
         </section>
     </div>
